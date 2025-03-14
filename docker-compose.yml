@@ -1,0 +1,11 @@
+services:
+  db_input:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: input
+    ports:
+      - "5433:5432"
+    volumes:
+      - ./db_input.sql:/docker-entrypoint-initdb.d/db_input.sql
+      
