@@ -8,4 +8,26 @@ services:
       - "5433:5432"
     volumes:
       - ./db_input.sql:/docker-entrypoint-initdb.d/db_input.sql
-      
+    networks:
+      - api_network
+  
+  api:
+    build: ./api/
+    command: fastapi run main.py --port 80 --reload
+    restart: always
+    ports:
+      - "5000:80"
+    depends_on:
+      - db_input
+    environment:
+      DATABASE_URL: "postgresql+psycopg2://input_user:input_password@db_input:5432/input_db"
+    volumes:
+      - type: bind
+        source: ./api/
+        target: /code
+    networks:
+      - api_network
+
+networks:
+  api_network:
+    driver: bridge
