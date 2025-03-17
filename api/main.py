@@ -24,24 +24,33 @@ class Data(SQLModel, table=True):
     power: float = None
     ambient_temperature: float = None
 
+def generate_variables_list(variables):
+    if variables:
+        variables_list = variables.split(",")
+        for variable in variables_list:
+            if variable not in Data.__annotations__.keys():
+                raise HTTPException(status_code=404, detail="Verifique nome das variaveis")
+    else:
+        variables_list = list(Data.__annotations__.keys())
+    return variables_list
 
-@app.get("/data/", response_model=list[Data])
-async def get_table_itens(data_inicial: str,horario_inicial: str,data_final: str,horario_final: str,session: SessionDep):
+@app.get("/data/")
+async def get_table_itens(day: str,session: SessionDep,variables: Optional[str] = None):
 
-    initial_date = datetime.strptime(data_inicial, "%d/%m/%Y")
-    initial_time = datetime.strptime(horario_inicial, "%H:%M:%S")
-    date_init = initial_date + timedelta(hours=initial_time.hour,minutes=initial_time.minute,seconds=initial_time.second)
+    date = datetime.strptime(day, '%d/%m/%Y')
+    next_day = date + timedelta(days=1)
 
-    final_date = datetime.strptime(data_final, "%d/%m/%Y")
-    final_time = datetime.strptime(horario_final, "%H:%M:%S")
-    date_fin = final_date + timedelta(hours=final_time.hour,minutes=final_time.minute,seconds=final_time.second)
+    variables_list = generate_variables_list(variables)
 
-    
-    statement = select(Data).where(Data.timestamp >= date_init).where(Data.timestamp <= date_fin)
+    columns = [getattr(Data, variable) for variable in variables_list]
+    statement = select(*columns).where(Data.timestamp >= date).where(Data.timestamp < next_day)
     result = session.exec(statement).all()
-    if not result:
-        raise HTTPException(status_code=404, detail="Sem dados para esse periodo")
 
-    return JSONResponse(content=jsonable_encoder(result))
+    try:
+        result_dicts = [dict(zip(variables_list, row)) for row in result]
+    except ValueError:
+        result_dicts = [dict(zip(variables_list, [row])) for row in result] 
+    
+    return result_dicts
 
 # http://127.0.0.1:8000/data/?data_inicial=14/03/2025&horario_inicial=19:30:00&data_final=15/03/2025&horario_final=19:20:00

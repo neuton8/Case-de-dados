@@ -1,4 +1,13 @@
 services:
+  db_output:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: output
+    ports:
+      - "5434:5432"
+    volumes:
+      - ./database/db_output.sql:/docker-entrypoint-initdb.d/db_input.sql
   db_input:
     image: postgres
     restart: always
@@ -7,7 +16,7 @@ services:
     ports:
       - "5433:5432"
     volumes:
-      - ./db_input.sql:/docker-entrypoint-initdb.d/db_input.sql
+      - ./database/db_input.sql:/docker-entrypoint-initdb.d/db_input.sql
     networks:
       - api_network
   
