@@ -5,9 +5,9 @@ services:
     environment:
       POSTGRES_PASSWORD: output
     ports:
-      - "5434:5432"
+      - "5333:5432"
     volumes:
-      - ./database/db_output.sql:/docker-entrypoint-initdb.d/db_input.sql
+      - ./database/db_output.sql:/docker-entrypoint-initdb.d/db_output.sql
   db_input:
     image: postgres
     restart: always
