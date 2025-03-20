@@ -1,16 +1,16 @@
 # Case de dados
-Repositorio destinado a resolução do case de dados, aqui se encontram todas as intrucoes para rodar o codigo bem como a estrutura e definicao dos dados.
+Repositório destinado à resolução do case de dados. Aqui se encontram todas as instruções para rodar o código, bem como a estrutura e definição dos dados.
 
 
 # Iniciando o docker
-Para iniciar o docker, basta rodar o comando abaixo no iretorio raiz do projeto.
+Para iniciar o docker, basta rodar o comando abaixo no diretorio raiz do projeto.
 ```bash
 docker compose up
 ```
-Nesse momento, o docker ira subir os bancos de dados fonte\alvo e a API, apos isso, o endponit http://localhost:5000/data ficara acessivel para resgatar os dados do banco fonte.
+Nesse momento, o dockerirá subir os bancos de dados fonte/alvo e a API. Após isso, o endpoint http://localhost:5000/data ficara acessivel para resgatar os dados do banco fonte.
 
 # Estrutura dos dados no banco fonte
-O banco de dados fonte é um banco de dados relacional, com a seguinte estrutura:
+O banco de dados fonte é um banco de dados relacional com a seguinte estrutura:
 
 - Tabela: `data`
   - Colunas:
@@ -19,10 +19,10 @@ O banco de dados fonte é um banco de dados relacional, com a seguinte estrutura
     - `power` (float): Potência gerada em MW
     - `ambient_temperature` (float): Temperatura ambiente em graus Celsius
 
-Os dados desse banco são gerados automaticamente assim que o banco é criado, a data e hora da primeira medição é a data e hora de criação desse. Os dados são gerados por minuto ate um periodo de 10 anos a partir da data de criacao do banco.
+Os dados deste banco são gerados automaticamente a partir do momento de sua criação. A data e hora da última medição correspondem ao momento em que o banco foi criado. As medições são registradas a cada minuto, abrangendo um período de até 10 dias antes da criação do banco.
  
 # Estrutura dos dados no banco alvo
-O banco de dados alvo é um banco de dados relacional, com a seguinte estrutura:
+O banco de dados alvo é um banco de dados relacional com a seguinte estrutura:
 
   signal_id = Column(Integer, primary_key=True,autoincrement=True)
     name = Column(String)
@@ -56,7 +56,10 @@ O codigo python se encontra no arquivo `./etl/main.ipynb` e é responsável por 
 
 Importante ressaltar que o codigo python foi desenvolvido em um notebook, e para rodar o codigo, basta executar todas as celulas do notebook.
 
-As bibliotecas se encontram no arquivo `./etl/requirements.txt` e podem ser instaladas com o comando abaixo:
+As bibliotecas se encontram no arquivo `./etl/requirements.txt` e podem ser instaladas em um novo ambiente python local. Para criar o .env e instalar as bibliotecas necessárias, basta rodar o comando abaixo no diretorio raiz do projeto.
 ```bash
-pip install -r requirements.txt
+  python3 -m venv .env
+  source .env/bin/activate
+  pip install -r etl/requirements.txt
 ```
+
