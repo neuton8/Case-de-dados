@@ -1,0 +1,11 @@
+README.md
+pyproject.toml
+setup.cfg
+setup.py
+pipelineDagster/__init__.py
+pipelineDagster/assets.py
+pipelineDagster.egg-info/PKG-INFO
+pipelineDagster.egg-info/SOURCES.txt
+pipelineDagster.egg-info/dependency_links.txt
+pipelineDagster.egg-info/requires.txt
+pipelineDagster.egg-info/top_level.txt
