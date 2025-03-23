@@ -1,13 +1,17 @@
-from dagster import Definitions, load_assets_from_modules
-from . import assets
-from .etl import resources as etl
+import dagster as dg
+from .etl import assets, resources
+
+
+
 ##### Extraction
-extraction_assets = load_assets_from_modules([etl])
+assets = dg.load_assets_from_modules([assets])
 
 
-defs = Definitions(
-    assets=extraction_assets,
+
+defs = dg.Definitions(
+    assets=assets,
     resources={
-        "my_conn": etl.ApiDataPostgress(),
+        "my_conn": resources.ApiDataPostgress(api_host=dg.EnvVar("API_HOST"), api_port=dg.EnvVar("API_PORT"), api_endpoint=dg.EnvVar("API_ENDPOINT")),
+        "my_db": resources.DatabasePostgress(url = dg.EnvVar("DATABASE_URL")),
     },
 )
